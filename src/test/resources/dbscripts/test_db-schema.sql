@@ -1,35 +1,15 @@
 -- Database for Request a Change Application
 
-DROP TABLE IF EXISTS change_request_story;
-DROP TABLE IF EXISTS change_request_recipient;
-DROP TABLE IF EXISTS change_request;
-DROP TABLE IF EXISTS user_role;
-DROP TABLE IF EXISTS risk;
-DROP TABLE IF EXISTS state;
-DROP TABLE IF EXISTS user;
-DROP TABLE IF EXISTS role;
-DROP TABLE IF EXISTS story;
-DROP TABLE IF EXISTS recipient_type;
-
---
--- Table structure for table `risk`
---
-
-CREATE TABLE IF NOT EXISTS risk (
-    id          INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    value       VARCHAR(10) NOT NULL,
-    PRIMARY KEY (id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Table structure for table `state`
---
-
-CREATE TABLE IF NOT EXISTS state (
-    id          INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    name        VARCHAR(30) NOT NULL,
-    PRIMARY KEY (id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+--DROP TABLE IF EXISTS change_request_story;
+--DROP TABLE IF EXISTS change_request_recipient;
+--DROP TABLE IF EXISTS change_request;
+--DROP TABLE IF EXISTS user_role;
+--DROP TABLE IF EXISTS risk;
+--DROP TABLE IF EXISTS state;
+--DROP TABLE IF EXISTS user;
+--DROP TABLE IF EXISTS role;
+--DROP TABLE IF EXISTS story;
+--DROP TABLE IF EXISTS recipient_type;
 
 --
 -- Table structure for table `change_request`
@@ -42,14 +22,10 @@ CREATE TABLE IF NOT EXISTS change_request (
     detail      TEXT,
     control     TEXT,
     customer    VARCHAR(100),
-    risk_id     INT UNSIGNED NOT NULL,
-    state_id    INT UNSIGNED NOT NULL,
+    risk        VARCHAR(10) NOT NULL,
+    state       VARCHAR(30) NOT NULL,
     PRIMARY KEY (id),
-    KEY idx_change_request_title (title),   -- To build index (non-unique) on title
-    CONSTRAINT fk_change_request_risk FOREIGN KEY (risk_id) REFERENCES risk (id)
-    ON DELETE RESTRICT ON UPDATE CASCADE,
-    CONSTRAINT fk_change_request_state FOREIGN KEY (state_id) REFERENCES state (id)
-    ON DELETE RESTRICT ON UPDATE CASCADE
+    KEY idx_change_request_title (title)   -- To build index (non-unique) on title
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
