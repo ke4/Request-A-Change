@@ -1,15 +1,15 @@
 -- Database for Request a Change Application
 
---DROP TABLE IF EXISTS change_request_story;
---DROP TABLE IF EXISTS change_request_recipient;
---DROP TABLE IF EXISTS change_request;
---DROP TABLE IF EXISTS user_role;
---DROP TABLE IF EXISTS risk;
---DROP TABLE IF EXISTS state;
---DROP TABLE IF EXISTS user;
---DROP TABLE IF EXISTS role;
---DROP TABLE IF EXISTS story;
---DROP TABLE IF EXISTS recipient_type;
+DROP TABLE IF EXISTS change_request_story;
+DROP TABLE IF EXISTS change_request_recipient;
+DROP TABLE IF EXISTS change_request;
+DROP TABLE IF EXISTS user_role;
+DROP TABLE IF EXISTS risk;
+DROP TABLE IF EXISTS state;
+DROP TABLE IF EXISTS user;
+DROP TABLE IF EXISTS role;
+DROP TABLE IF EXISTS story;
+DROP TABLE IF EXISTS recipient_type;
 
 --
 -- Table structure for table `change_request`
