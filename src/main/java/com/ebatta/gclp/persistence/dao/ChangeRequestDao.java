@@ -12,9 +12,11 @@ public interface ChangeRequestDao {
 
     List<ChangeRequest> findAll();
 
-    void create(ChangeRequest changeRequest);
+    ChangeRequest create(ChangeRequest changeRequest);
 
     ChangeRequest update(ChangeRequest changeRequest);
 
-    void deleteById(int id);
+    ChangeRequest delete(final ChangeRequest entity);
+
+    ChangeRequest deleteById(int id);
 }

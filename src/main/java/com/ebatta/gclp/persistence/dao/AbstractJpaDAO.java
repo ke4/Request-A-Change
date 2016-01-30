@@ -26,21 +26,23 @@ public abstract class AbstractJpaDAO<T extends Serializable> {
         return entityManager.createQuery("from " + clazz.getName()).getResultList();
     }
 
-    public void create(final T entity) {
+    public T create(final T entity) {
         entityManager.persist(entity);
+        return entity;
     }
 
     public T update(final T entity) {
         return entityManager.merge(entity);
     }
     
-    public void delete(final T entity) {
+    public T delete(final T entity) {
         entityManager.remove(entity);
+        return entity;
     }
 
-    public void deleteById(final int entityId) {
+    public T deleteById(final int entityId) {
         final T entity = findById(entityId);
-        delete(entity);
+        return delete(entity);
     }
 
 }

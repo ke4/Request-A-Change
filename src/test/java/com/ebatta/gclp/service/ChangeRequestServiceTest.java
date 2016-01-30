@@ -1,7 +1,6 @@
 package com.ebatta.gclp.service;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 import java.util.List;
 
@@ -18,10 +17,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ebatta.gclp.config.AppConfig;
 import com.ebatta.gclp.config.PersistenceJPAConfig;
 import com.ebatta.gclp.config.WebConfig;
+import com.ebatta.gclp.exception.ChangeRequestNotFoundException;
 import com.ebatta.gclp.persistence.model.ChangeRequest;
 import com.ebatta.gclp.persistence.model.RequestStateEnum;
 import com.ebatta.gclp.persistence.model.RiskEnum;
-import com.ebatta.gclp.service.ChangeRequestService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -37,7 +36,7 @@ public class ChangeRequestServiceTest {
     }
 
     @Test
-    public void testFindById() {
+    public void whenFindByIdExistingChangeRequest_ShouldReturnIt() throws ChangeRequestNotFoundException {
         ChangeRequest cr = service.findById(1);
         assertEquals(1, cr.getId());
         assertEquals("test title 1", cr.getTitle());
@@ -49,8 +48,13 @@ public class ChangeRequestServiceTest {
         assertEquals("Approved", cr.getState().toString());
     }
 
+    @Test(expected=ChangeRequestNotFoundException.class)
+    public void whenFindByIdNotExistingChangeRequest_ShouldThrowException() throws ChangeRequestNotFoundException {
+        service.findById(111);
+    }
+
     @Test
-    public void testFindAll() {
+    public void WhenFindAllExistingChangeRequest_ShouldReturnAList() {
         List<ChangeRequest> changeRequests = service.findAll();
         assertEquals(5, changeRequests.size());
     }
@@ -58,35 +62,34 @@ public class ChangeRequestServiceTest {
     @Test
     @Transactional
     @Rollback(true)
-    public void testCreate() {
+    public void whenCreate_ShouldPersistToDatabase() throws ChangeRequestNotFoundException {
         String changeRequestTitle = "New change request";
         ChangeRequest newCR = createNewChangeRequest(changeRequestTitle, "New change request summary",
             "The details of the new change request", "The control statement of the new change request",
             "Customer 1", RiskEnum.High, RequestStateEnum.Submitted);
 
-        service.create(newCR);
+        ChangeRequest persistedChangeRequest = service.create(newCR);
 
-        ChangeRequest savedChangeRequest = service.findByTitle(changeRequestTitle);
-        assertEquals(changeRequestTitle, savedChangeRequest.getTitle());
+        assertEquals(changeRequestTitle, persistedChangeRequest.getTitle());
     }
 
     @Test
     @Transactional
     @Rollback(true)
-    public void testUpdate() {
+    public void whenUpdateExistingChangeRequest_ShouldPersistTheUpdatedEntityToDatabase() throws ChangeRequestNotFoundException {
         ChangeRequest crToUpdate = service.findById(3);
         assertEquals(RequestStateEnum.Submitted, crToUpdate.getState());
         crToUpdate.setState(RequestStateEnum.Approved);
 
-        service.update(crToUpdate);
+        ChangeRequest updatedpersistedChangeRequest = service.update(crToUpdate);
 
-        assertEquals(RequestStateEnum.Approved, service.findById(3).getState());
+        assertEquals(RequestStateEnum.Approved, updatedpersistedChangeRequest.getState());
     }
 
-    @Test
+    @Test(expected=ChangeRequestNotFoundException.class)
     @Transactional
     @Rollback(true)
-    public void testDelete() {
+    public void whenDeleteChangeRequest_ShouldRemoveItFromDatabase() throws ChangeRequestNotFoundException {
         String changeRequestTitle = "New change request 2";
         ChangeRequest newCR = createNewChangeRequest(changeRequestTitle, "New change request summary 2",
                 "The details of the new change request 2", "The control statement of the new change request 2",
@@ -98,7 +101,7 @@ public class ChangeRequestServiceTest {
 
         service.delete(savedChangeRequest.getId());
 
-        assertNull(service.findByTitle(changeRequestTitle));
+        service.findByTitle(changeRequestTitle);
     }
 
     private ChangeRequest createNewChangeRequest(

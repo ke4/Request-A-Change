@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ebatta.gclp.exception.ChangeRequestNotFoundException;
 import com.ebatta.gclp.persistence.dao.ChangeRequestDao;
 import com.ebatta.gclp.persistence.model.ChangeRequest;
 
@@ -17,13 +18,25 @@ public class ChangeRequestServiceImpl implements ChangeRequestService {
     private ChangeRequestDao dao;
     
     @Override
-    public ChangeRequest findById(int id) {
-        return dao.findById(id);
+    public ChangeRequest findById(int id) throws ChangeRequestNotFoundException {
+        ChangeRequest changeRequest = dao.findById(id);
+        if (changeRequest == null) {
+            throw new ChangeRequestNotFoundException(
+                    "No Change request has been found with the following id: " + id);
+        }
+
+        return changeRequest;
     }
 
     @Override
-    public ChangeRequest findByTitle(final String title) {
-        return dao.findByTitle(title);
+    public ChangeRequest findByTitle(final String title) throws ChangeRequestNotFoundException {
+        ChangeRequest changeRequest = dao.findByTitle(title);
+        if (changeRequest == null) {
+            throw new ChangeRequestNotFoundException(
+                    "No Change request has been found with the following title: " + title);
+        }
+
+        return changeRequest;
     }
 
     @Override
@@ -32,18 +45,20 @@ public class ChangeRequestServiceImpl implements ChangeRequestService {
     }
 
     @Override
-    public void create(ChangeRequest changeRequest) {
-        dao.create(changeRequest);
+    public ChangeRequest create(ChangeRequest changeRequest) {
+        return dao.create(changeRequest);
     }
 
     @Override
-    public void update(ChangeRequest changeRequest) {
-        dao.update(changeRequest);
+    public ChangeRequest update(ChangeRequest changeRequest) throws ChangeRequestNotFoundException {
+        ChangeRequest changeRequestToUpdate = dao.findById(changeRequest.getId());
+        return dao.update(changeRequestToUpdate);
     }
 
     @Override
-    public void delete(int id) {
-       dao.deleteById(id);
+    public ChangeRequest delete(int id) throws ChangeRequestNotFoundException {
+        ChangeRequest changeRequest = dao.findById(id);
+        return dao.delete(changeRequest);
     }
 
 }
