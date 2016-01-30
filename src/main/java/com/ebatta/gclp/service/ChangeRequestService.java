@@ -1,4 +1,4 @@
-package com.ebatta.gclp.form.service;
+package com.ebatta.gclp.service;
 
 import java.util.List;
 

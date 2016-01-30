@@ -1,4 +1,4 @@
-package com.ebatta.gclp.form.service;
+package com.ebatta.gclp.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -8,33 +8,27 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ebatta.gclp.config.AppConfig;
 import com.ebatta.gclp.config.PersistenceJPAConfig;
 import com.ebatta.gclp.config.WebConfig;
 import com.ebatta.gclp.persistence.model.ChangeRequest;
 import com.ebatta.gclp.persistence.model.RequestStateEnum;
 import com.ebatta.gclp.persistence.model.RiskEnum;
+import com.ebatta.gclp.service.ChangeRequestService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 //ApplicationContext will be loaded from AppConfig and TestConfig
-@ContextConfiguration(classes = {WebConfig.class, PersistenceJPAConfig.class})
+@ContextConfiguration(classes = {WebConfig.class, PersistenceJPAConfig.class, AppConfig.class})
 public class ChangeRequestServiceTest {
 
-    @Autowired
-    private Environment env;
-    
-    private static final Logger logger = LoggerFactory.getLogger(ChangeRequestServiceTest.class);
-    
     @Autowired
     private ChangeRequestService service;
     

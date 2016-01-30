@@ -12,19 +12,16 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
-import org.springframework.web.context.support.ServletContextResource;
 import org.springframework.web.servlet.DispatcherServlet;
-import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
-import org.springframework.web.servlet.view.XmlViewResolver;
 
 @Configuration
 @EnableWebMvc
-@ComponentScan(basePackages = "com.ebatta.gclp")
+@ComponentScan(basePackages = "com.ebatta.gclp.controller")
 public class WebConfig extends WebMvcConfigurerAdapter implements WebApplicationInitializer {
 
     private static final Logger logger = LoggerFactory.getLogger(WebConfig.class);
@@ -37,6 +34,7 @@ public class WebConfig extends WebMvcConfigurerAdapter implements WebApplication
         // Create the 'root' Spring application context
         AnnotationConfigWebApplicationContext rootContext = new AnnotationConfigWebApplicationContext();
         rootContext.register(AppConfig.class);
+        rootContext.register(PersistenceJPAConfig.class);
 
         // Manage the lifecycle of the root application context
         container.addListener(new ContextLoaderListener(rootContext));
@@ -70,6 +68,7 @@ public class WebConfig extends WebMvcConfigurerAdapter implements WebApplication
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/").setViewName("/index");
+        registry.addViewController("/change_request").setViewName("/change_request");
     }
 
 }
