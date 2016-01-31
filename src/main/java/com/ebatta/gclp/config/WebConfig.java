@@ -1,5 +1,7 @@
 package com.ebatta.gclp.config;
 
+import java.util.Properties;
+
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRegistration;
 
@@ -17,6 +19,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 @Configuration
@@ -71,4 +74,14 @@ public class WebConfig extends WebMvcConfigurerAdapter implements WebApplication
         registry.addViewController("/change_request").setViewName("/change_request");
     }
 
+    @Bean
+    public SimpleMappingExceptionResolver simpleMappingExceptionResolver()
+    {
+        SimpleMappingExceptionResolver exceptionResolver = new SimpleMappingExceptionResolver();
+
+        Properties mappings = new Properties();
+        mappings.put("java.lang.Exception", "error/generic_error");
+        exceptionResolver.setExceptionMappings(mappings);
+        return exceptionResolver;
+    }
 }

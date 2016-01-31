@@ -8,6 +8,7 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -29,6 +30,7 @@ import org.springframework.web.context.WebApplicationContext;
 import com.ebatta.gclp.config.PersistenceJPAConfig;
 import com.ebatta.gclp.config.TestContext;
 import com.ebatta.gclp.config.WebConfig;
+import com.ebatta.gclp.exception.ChangeRequestNotFoundException;
 import com.ebatta.gclp.persistence.model.ChangeRequest;
 import com.ebatta.gclp.persistence.model.ChangeRequestBuilder;
 import com.ebatta.gclp.persistence.model.RequestStateEnum;
@@ -107,4 +109,17 @@ public class ChangeRequestControllerTest {
         verifyNoMoreInteractions(changeRequestServiceMock);
     }
 
+    @Test
+    public void findById_ChangeRequestEntryNotFound_ShouldRenderErrorView() throws Exception {
+        when(changeRequestServiceMock.findById(111))
+            .thenThrow(new ChangeRequestNotFoundException("No Change request has been found with the following id: 111"));
+
+        mockMvc.perform(get("/changerequest/{id}", 111))
+                .andExpect(status().isNotFound())
+                .andExpect(view().name("error/cr_notfound"))
+                .andExpect(forwardedUrl("/WEB-INF/views/error/cr_notfound.jsp"));
+
+        verify(changeRequestServiceMock, times(1)).findById(111);
+        verifyZeroInteractions(changeRequestServiceMock);
+    }
 }
