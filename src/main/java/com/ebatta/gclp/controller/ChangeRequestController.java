@@ -30,6 +30,7 @@ public class ChangeRequestController {
     public String findById(@PathVariable(value="id") int id, Model model)
             throws ChangeRequestNotFoundException {
         model.addAttribute("changeRequest", service.findById(id));
+        model.addAttribute("mode", "view");
         return "changerequest/view";
     }
 

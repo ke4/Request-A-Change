@@ -63,47 +63,47 @@ public class ChangeRequestControllerTest {
     @Test
     public void findAllChangeRequests_ShouldReturnAllChangeRequests() throws Exception {
         ChangeRequest cr1 = new ChangeRequestBuilder()
-                .id(1)
-                .title("New CR title 1")
-                .summary("New CR summary 1")
-                .detail("New CR detail 1")
-                .control("New CR control 1")
-                .customer("New customer 1")
-                .risk(RiskEnum.High)
-                .state(RequestStateEnum.Submitted)
-                .build();
+            .id(1)
+            .title("New CR title 1")
+            .summary("New CR summary 1")
+            .detail("New CR detail 1")
+            .control("New CR control 1")
+            .customer("New customer 1")
+            .risk(RiskEnum.High)
+            .state(RequestStateEnum.Submitted)
+            .build();
         ChangeRequest cr2 = new ChangeRequestBuilder()
-                .id(2)
-                .title("New CR title 2")
-                .summary("New CR summary 2")
-                .detail("New CR detail 2")
-                .control("New CR control 2")
-                .customer("New customer 2")
-                .risk(RiskEnum.Medium)
-                .state(RequestStateEnum.Approved)
-                .build();
+            .id(2)
+            .title("New CR title 2")
+            .summary("New CR summary 2")
+            .detail("New CR detail 2")
+            .control("New CR control 2")
+            .customer("New customer 2")
+            .risk(RiskEnum.Medium)
+            .state(RequestStateEnum.Approved)
+            .build();
 
         when(changeRequestServiceMock.findAll()).thenReturn(Arrays.asList(cr1, cr2));
 
         mockMvc.perform(get("/changerequests"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("changerequest/list"))
-                .andExpect(forwardedUrl("/WEB-INF/views/changerequest/list.jsp"))
-                .andExpect(model().attribute("changeRequests", hasSize(2)))
-                .andExpect(model().attribute("changeRequests", hasItem(
-                        allOf(
-                                hasProperty("id", is(1)),
-                                hasProperty("title", is("New CR title 1")),
-                                hasProperty("summary", is("New CR summary 1"))
-                        )
-                )))
-                .andExpect(model().attribute("changeRequests", hasItem(
-                        allOf(
-                                hasProperty("id", is(2)),
-                                hasProperty("title", is("New CR title 2")),
-                                hasProperty("summary", is("New CR summary 2"))
-                        )
-                )));
+            .andExpect(status().isOk())
+            .andExpect(view().name("changerequest/list"))
+            .andExpect(forwardedUrl("/WEB-INF/views/changerequest/list.jsp"))
+            .andExpect(model().attribute("changeRequests", hasSize(2)))
+            .andExpect(model().attribute("changeRequests", hasItem(
+                allOf(
+                    hasProperty("id", is(1)),
+                    hasProperty("title", is("New CR title 1")),
+                    hasProperty("summary", is("New CR summary 1"))
+                )
+            )))
+            .andExpect(model().attribute("changeRequests", hasItem(
+                allOf(
+                    hasProperty("id", is(2)),
+                    hasProperty("title", is("New CR title 2")),
+                    hasProperty("summary", is("New CR summary 2"))
+                )
+            )));
 
         verify(changeRequestServiceMock, times(1)).findAll();
         verifyNoMoreInteractions(changeRequestServiceMock);
@@ -115,11 +115,51 @@ public class ChangeRequestControllerTest {
             .thenThrow(new ChangeRequestNotFoundException("No Change request has been found with the following id: 111"));
 
         mockMvc.perform(get("/changerequest/{id}", 111))
-                .andExpect(status().isNotFound())
-                .andExpect(view().name("error/cr_notfound"))
-                .andExpect(forwardedUrl("/WEB-INF/views/error/cr_notfound.jsp"));
+            .andExpect(status().isNotFound())
+            .andExpect(view().name("error/cr_notfound"))
+            .andExpect(forwardedUrl("/WEB-INF/views/error/cr_notfound.jsp"));
 
         verify(changeRequestServiceMock, times(1)).findById(111);
         verifyZeroInteractions(changeRequestServiceMock);
+    }
+
+    @Test
+    public void findById_ChangeRequestEntryFound_ShouldRenderView() throws Exception {
+        final int crId = 1;
+        final String crTitle = "CR title 1";
+        final String crSummary = "CR summary 1";
+        final String crDetail = "CR detail 1";
+        final String crControl = "CR control 1";
+        final String crCustomer = "customer 1";
+        final RiskEnum crRisk = RiskEnum.High;
+        final RequestStateEnum crState = RequestStateEnum.Submitted;
+
+        ChangeRequest cr = new ChangeRequestBuilder()
+            .id(crId)
+            .title(crTitle)
+            .summary(crSummary)
+            .detail(crDetail)
+            .control(crControl)
+            .customer(crCustomer)
+            .risk(crRisk)
+            .state(crState)
+            .build();
+        when(changeRequestServiceMock.findById(1)).thenReturn(cr);
+
+        mockMvc.perform(get("/changerequest/{id}", 1))
+            .andExpect(status().isOk())
+            .andExpect(view().name("changerequest/view"))
+            .andExpect(forwardedUrl("/WEB-INF/views/changerequest/view.jsp"))
+            .andExpect(model().attribute("changeRequest", hasProperty("id", is(crId))))
+            .andExpect(model().attribute("changeRequest", hasProperty("title", is(crTitle))))
+            .andExpect(model().attribute("changeRequest", hasProperty("summary", is(crSummary))))
+            .andExpect(model().attribute("changeRequest", hasProperty("detail", is(crDetail))))
+            .andExpect(model().attribute("changeRequest", hasProperty("control", is(crControl))))
+            .andExpect(model().attribute("changeRequest", hasProperty("customer", is(crCustomer))))
+            .andExpect(model().attribute("changeRequest", hasProperty("risk", is(crRisk))))
+            .andExpect(model().attribute("changeRequest", hasProperty("state", is(crState))));
+
+        verify(changeRequestServiceMock, times(1)).findById(1);
+        verifyNoMoreInteractions(changeRequestServiceMock);
     }
 }
