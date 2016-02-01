@@ -10,7 +10,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.Arrays;
@@ -50,6 +50,21 @@ public class ChangeRequestControllerTest {
     @Autowired
     private WebApplicationContext webApplicationContext;
 
+    private static final int TEST_DATA_CR_ID = 1;
+    private static final String TEST_DATA_CR_TITLE = "CR title 1";
+    private static final String TEST_DATA_CR_SUMMARY = "CR summary 1";
+    private static final String TEST_DATA_CR_DETAIL = "CR detail 1";
+    private static final String TEST_DATA_CR_CONTROL = "CR control 1";
+    private static final String TEST_DATA_CR_CUSTOMER = "customer 1";
+    private static final String TEST_DATA_CR_TITLE2 = "CR title 2";
+    private static final String TEST_DATA_CR_SUMMARY2 = "CR summary 2";
+    private static final String TEST_DATA_CR_DETAIL2 = "CR detail 2";
+    private static final String TEST_DATA_CR_CONTROL2 = "CR control 2";
+    private static final String TEST_DATA_CR_CUSTOMER2 = "customer 2";
+    private static final RiskEnum TEST_DATA_CR_RISK = RiskEnum.High;
+    private static final RequestStateEnum TEST_DATA_CR_STATE = RequestStateEnum.Submitted;
+
+
     @Before
     public void setUp() {
         //We have to reset our mock between tests because the mock objects
@@ -64,21 +79,21 @@ public class ChangeRequestControllerTest {
     public void findAllChangeRequests_ShouldReturnAllChangeRequests() throws Exception {
         ChangeRequest cr1 = new ChangeRequestBuilder()
             .id(1)
-            .title("New CR title 1")
-            .summary("New CR summary 1")
-            .detail("New CR detail 1")
-            .control("New CR control 1")
-            .customer("New customer 1")
+            .title(TEST_DATA_CR_TITLE)
+            .summary(TEST_DATA_CR_SUMMARY)
+            .detail(TEST_DATA_CR_DETAIL)
+            .control(TEST_DATA_CR_CONTROL)
+            .customer(TEST_DATA_CR_CUSTOMER)
             .risk(RiskEnum.High)
             .state(RequestStateEnum.Submitted)
             .build();
         ChangeRequest cr2 = new ChangeRequestBuilder()
             .id(2)
-            .title("New CR title 2")
-            .summary("New CR summary 2")
-            .detail("New CR detail 2")
-            .control("New CR control 2")
-            .customer("New customer 2")
+            .title(TEST_DATA_CR_TITLE2)
+            .summary(TEST_DATA_CR_SUMMARY2)
+            .detail(TEST_DATA_CR_DETAIL2)
+            .control(TEST_DATA_CR_CONTROL2)
+            .customer(TEST_DATA_CR_CUSTOMER2)
             .risk(RiskEnum.Medium)
             .state(RequestStateEnum.Approved)
             .build();
@@ -93,15 +108,21 @@ public class ChangeRequestControllerTest {
             .andExpect(model().attribute("changeRequests", hasItem(
                 allOf(
                     hasProperty("id", is(1)),
-                    hasProperty("title", is("New CR title 1")),
-                    hasProperty("summary", is("New CR summary 1"))
+                    hasProperty("title", is(TEST_DATA_CR_TITLE)),
+                    hasProperty("summary", is(TEST_DATA_CR_SUMMARY)),
+                    hasProperty("detail", is(TEST_DATA_CR_DETAIL)),
+                    hasProperty("control", is(TEST_DATA_CR_CONTROL)),
+                    hasProperty("customer", is(TEST_DATA_CR_CUSTOMER))
                 )
             )))
             .andExpect(model().attribute("changeRequests", hasItem(
                 allOf(
                     hasProperty("id", is(2)),
-                    hasProperty("title", is("New CR title 2")),
-                    hasProperty("summary", is("New CR summary 2"))
+                    hasProperty("title", is(TEST_DATA_CR_TITLE2)),
+                    hasProperty("summary", is(TEST_DATA_CR_SUMMARY2)),
+                    hasProperty("detail", is(TEST_DATA_CR_DETAIL2)),
+                    hasProperty("control", is(TEST_DATA_CR_CONTROL2)),
+                    hasProperty("customer", is(TEST_DATA_CR_CUSTOMER2))
                 )
             )));
 
@@ -125,24 +146,16 @@ public class ChangeRequestControllerTest {
 
     @Test
     public void findById_ChangeRequestEntryFound_ShouldRenderView() throws Exception {
-        final int crId = 1;
-        final String crTitle = "CR title 1";
-        final String crSummary = "CR summary 1";
-        final String crDetail = "CR detail 1";
-        final String crControl = "CR control 1";
-        final String crCustomer = "customer 1";
-        final RiskEnum crRisk = RiskEnum.High;
-        final RequestStateEnum crState = RequestStateEnum.Submitted;
 
         ChangeRequest cr = new ChangeRequestBuilder()
-            .id(crId)
-            .title(crTitle)
-            .summary(crSummary)
-            .detail(crDetail)
-            .control(crControl)
-            .customer(crCustomer)
-            .risk(crRisk)
-            .state(crState)
+            .id(TEST_DATA_CR_ID)
+            .title(TEST_DATA_CR_TITLE)
+            .summary(TEST_DATA_CR_SUMMARY)
+            .detail(TEST_DATA_CR_DETAIL)
+            .control(TEST_DATA_CR_CONTROL)
+            .customer(TEST_DATA_CR_CUSTOMER)
+            .risk(TEST_DATA_CR_RISK)
+            .state(TEST_DATA_CR_STATE)
             .build();
         when(changeRequestServiceMock.findById(1)).thenReturn(cr);
 
@@ -150,16 +163,52 @@ public class ChangeRequestControllerTest {
             .andExpect(status().isOk())
             .andExpect(view().name("changerequest/view"))
             .andExpect(forwardedUrl("/WEB-INF/views/changerequest/view.jsp"))
-            .andExpect(model().attribute("changeRequest", hasProperty("id", is(crId))))
-            .andExpect(model().attribute("changeRequest", hasProperty("title", is(crTitle))))
-            .andExpect(model().attribute("changeRequest", hasProperty("summary", is(crSummary))))
-            .andExpect(model().attribute("changeRequest", hasProperty("detail", is(crDetail))))
-            .andExpect(model().attribute("changeRequest", hasProperty("control", is(crControl))))
-            .andExpect(model().attribute("changeRequest", hasProperty("customer", is(crCustomer))))
-            .andExpect(model().attribute("changeRequest", hasProperty("risk", is(crRisk))))
-            .andExpect(model().attribute("changeRequest", hasProperty("state", is(crState))));
+            .andExpect(model().attribute("changeRequest", hasProperty("id", is(TEST_DATA_CR_ID))))
+            .andExpect(model().attribute("changeRequest", hasProperty("title", is(TEST_DATA_CR_TITLE))))
+            .andExpect(model().attribute("changeRequest", hasProperty("summary", is(TEST_DATA_CR_SUMMARY))))
+            .andExpect(model().attribute("changeRequest", hasProperty("detail", is(TEST_DATA_CR_DETAIL))))
+            .andExpect(model().attribute("changeRequest", hasProperty("control", is(TEST_DATA_CR_CONTROL))))
+            .andExpect(model().attribute("changeRequest", hasProperty("customer", is(TEST_DATA_CR_CUSTOMER))))
+            .andExpect(model().attribute("changeRequest", hasProperty("risk", is(TEST_DATA_CR_RISK))))
+            .andExpect(model().attribute("changeRequest", hasProperty("state", is(TEST_DATA_CR_STATE))));
 
         verify(changeRequestServiceMock, times(1)).findById(1);
         verifyNoMoreInteractions(changeRequestServiceMock);
+    }
+
+    @Test
+    public void deleteById_ChangeRequestEntryFound_ShouldDeleteChangeRequestAndRenderChangeRequestListView() throws Exception {
+        ChangeRequest cr = new ChangeRequestBuilder()
+            .id(TEST_DATA_CR_ID)
+            .title(TEST_DATA_CR_TITLE)
+            .summary(TEST_DATA_CR_SUMMARY)
+            .detail(TEST_DATA_CR_DETAIL)
+            .control(TEST_DATA_CR_CONTROL)
+            .customer(TEST_DATA_CR_CUSTOMER)
+            .risk(TEST_DATA_CR_RISK)
+            .state(TEST_DATA_CR_STATE)
+            .build();
+        when(changeRequestServiceMock.deleteById(1)).thenReturn(cr);
+
+        mockMvc.perform(post("/changerequest/{id}/delete", 1))
+            .andExpect(status().isFound())
+            .andExpect(view().name("redirect:/changerequests"));
+
+        verify(changeRequestServiceMock, times(1)).deleteById(1);
+        verifyNoMoreInteractions(changeRequestServiceMock);
+    }
+
+    @Test
+    public void deleteById_ChangeRequestEntryNotFound_ShouldRenderErrorView() throws Exception {
+        when(changeRequestServiceMock.deleteById(111)).thenThrow(
+            new ChangeRequestNotFoundException("No Change request has been found with the following id: 111"));
+
+        mockMvc.perform(post("/changerequest/{id}/delete", 111))
+            .andExpect(status().isNotFound())
+            .andExpect(view().name("error/cr_notfound"))
+            .andExpect(forwardedUrl("/WEB-INF/views/error/cr_notfound.jsp"));
+
+        verify(changeRequestServiceMock, times(1)).deleteById(111);
+        verifyZeroInteractions(changeRequestServiceMock);
     }
 }

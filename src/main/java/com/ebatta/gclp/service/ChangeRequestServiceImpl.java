@@ -56,9 +56,8 @@ public class ChangeRequestServiceImpl implements ChangeRequestService {
     }
 
     @Override
-    public ChangeRequest delete(int id) throws ChangeRequestNotFoundException {
-        ChangeRequest changeRequest = dao.findById(id);
-        return dao.delete(changeRequest);
+    public ChangeRequest deleteById(int id) throws ChangeRequestNotFoundException {
+        return dao.deleteById(id);
     }
 
 }

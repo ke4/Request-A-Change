@@ -17,5 +17,5 @@ public interface ChangeRequestService {
 
     ChangeRequest update(ChangeRequest changeRequest) throws ChangeRequestNotFoundException;
 
-    ChangeRequest delete(int id) throws ChangeRequestNotFoundException;
+    ChangeRequest deleteById(int id) throws ChangeRequestNotFoundException;
 }

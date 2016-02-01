@@ -99,7 +99,7 @@ public class ChangeRequestServiceTest {
         ChangeRequest savedChangeRequest = service.findByTitle(changeRequestTitle);
         assertEquals(changeRequestTitle, savedChangeRequest.getTitle());
 
-        service.delete(savedChangeRequest.getId());
+        service.deleteById(savedChangeRequest.getId());
 
         service.findByTitle(changeRequestTitle);
     }

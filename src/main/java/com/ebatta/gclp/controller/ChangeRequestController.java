@@ -1,6 +1,7 @@
 package com.ebatta.gclp.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,10 +35,17 @@ public class ChangeRequestController {
         return "changerequest/view";
     }
 
-    @ExceptionHandler(ChangeRequestNotFoundException.class)
+    @RequestMapping(value = "/changerequest/{id}/delete", method = RequestMethod.POST)
+    public String deleteById(@PathVariable(value="id") int id)
+            throws ChangeRequestNotFoundException {
+        service.deleteById(id);
+        return "redirect:/changerequests";
+    }
+
+    @ExceptionHandler({ChangeRequestNotFoundException.class, DataAccessException.class})
     @ResponseStatus(value=HttpStatus.NOT_FOUND)
     public ModelAndView handleChangeRequestNotFoundException(
-        ChangeRequestNotFoundException exception) {
+        Exception exception) {
 
         ModelAndView mav = new ModelAndView();
         mav.addObject("exception", exception);

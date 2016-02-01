@@ -11,6 +11,8 @@
 <title>List of the current Change Requests</title>
 <spring:url value="/resources/css/bootstrap.css" var="bootstrap" />
 <link href="${bootstrap}" rel="stylesheet" />
+<spring:url value="/resources/js/util.js" var="utiljs" />
+<script src="${utiljs}" type="text/javascript"></script>
 </head>
 <body>
   <div class="page-header text-center">

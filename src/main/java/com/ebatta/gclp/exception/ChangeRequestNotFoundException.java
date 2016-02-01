@@ -10,11 +10,11 @@ public class ChangeRequestNotFoundException extends Exception {
         this.exceptionMsg = message;
     }
 
-    public String getExceptionMsg(){
+    public String getMessage(){
         return this.exceptionMsg;
      }
 
-     public void setExceptionMsg(String exceptionMsg) {
+     public void setMessage(String exceptionMsg) {
         this.exceptionMsg = exceptionMsg;
      }
 }

@@ -33,24 +33,23 @@
       <div class="form-group">
         <label for="summary" class="col-sm-2 control-label">Summary</label>
         <div class="col-sm-9">
-          <textarea id="summary" class="form-control" name="summary">${changeRequest.summary}
+          <textarea id="summary" class="form-control" name="summary"
+            placeholder="Change Request Summary">${changeRequest.summary}
           </textarea>
         </div>
       </div>
       <div class="form-group">
         <label for="detail" class="col-sm-2 control-label">Detail</label>
         <div class="col-sm-9">
-          <input id="detail"
-            class="form-control" name="detail" value="${changeRequest.detail}"
-            placeholder="Change Request Details"/>
+          <textarea id="detail" class="form-control" name="detail"
+            placeholder="Change Request Details">${changeRequest.detail}</textarea>
         </div>
       </div>
       <div class="form-group">
         <label for="control" class="col-sm-2 control-label">Control</label>
         <div class="col-sm-9">
-          <input id="control"
-            class="form-control" name="control" value="${changeRequest.control}"
-            placeholder="Change Request Control" required/>
+          <textarea id="control" class="form-control" name="control"
+            placeholder="Change Request Control" required>${changeRequest.control}</textarea>
         </div>
       </div>
       <div class="form-group">

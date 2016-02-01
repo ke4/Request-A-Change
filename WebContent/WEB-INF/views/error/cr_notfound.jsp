@@ -14,7 +14,7 @@
     <h2>Error has happened</h2>
   </div>
 
-  <h3>${exception.exceptionMsg}</h3>
+  <h3>${exception.message}</h3>
 
 </body>
 </html>
