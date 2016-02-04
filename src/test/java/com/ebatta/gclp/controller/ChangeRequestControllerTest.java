@@ -1,29 +1,41 @@
 package com.ebatta.gclp.controller;
 
 import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.isEmptyOrNullString;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import java.util.Arrays;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -210,5 +222,93 @@ public class ChangeRequestControllerTest {
 
         verify(changeRequestServiceMock, times(1)).deleteById(111);
         verifyZeroInteractions(changeRequestServiceMock);
+    }
+
+    @Test
+    public void showAddChangeRequestForm_ShouldCreateFormAndRenderAddChangeRequestView() throws Exception {
+        ChangeRequest newChangeRequest = new ChangeRequestBuilder()
+            .id(TEST_DATA_CR_ID)
+            .title(TEST_DATA_CR_TITLE)
+            .summary(TEST_DATA_CR_SUMMARY)
+            .detail(TEST_DATA_CR_DETAIL)
+            .control(TEST_DATA_CR_CONTROL)
+            .customer(TEST_DATA_CR_CUSTOMER)
+            .risk(TEST_DATA_CR_RISK)
+            .state(TEST_DATA_CR_STATE)
+            .build();
+        when(changeRequestServiceMock.create(any(ChangeRequest.class))).thenReturn(newChangeRequest);
+
+        mockMvc.perform(get("/changerequest/add"))
+            .andExpect(status().isOk())
+            .andExpect(view().name("changerequest/view"))
+            .andExpect(forwardedUrl("/WEB-INF/views/changerequest/view.jsp"))
+            .andExpect(model().attribute("changeRequest", hasProperty("id", is(0))))
+            .andExpect(model().attribute("changeRequest", hasProperty("title", isEmptyOrNullString())))
+            .andExpect(model().attribute("changeRequest", hasProperty("summary", isEmptyOrNullString())))
+            .andExpect(model().attribute("changeRequest", hasProperty("detail", isEmptyOrNullString())))
+            .andExpect(model().attribute("changeRequest", hasProperty("control", isEmptyOrNullString())))
+            .andExpect(model().attribute("changeRequest", hasProperty("customer", isEmptyOrNullString())))
+            .andExpect(model().attribute("changeRequest", hasProperty("risk", isEmptyOrNullString())))
+            .andExpect(model().attribute("changeRequest", hasProperty("state", isEmptyOrNullString())));
+
+        verifyZeroInteractions(changeRequestServiceMock);
+    }
+
+    @Test
+    public void AddChangeRequest_ShouldRenderFormView_AndReturnValidationErrorForTitleAndCustomer() throws Exception {
+        String customerName = "a";
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post("/changerequest/add");
+        request.contentType(MediaType.APPLICATION_FORM_URLENCODED);
+        request.param("title", "");
+        request.param("customer", customerName);
+        request.param("control", "This is the control statement for this request.");
+        request.param("risk", "High");
+        request.param("state", "Submitted");
+
+        mockMvc.perform(request)
+            .andExpect(status().isOk())
+            .andExpect(view().name("changerequest/view"))
+            .andExpect(forwardedUrl("/WEB-INF/views/changerequest/view.jsp"))
+            .andExpect(model().errorCount(3))
+            .andExpect(model().attributeHasFieldErrors("changeRequest", "title"))
+            .andExpect(model().attributeHasFieldErrors("changeRequest", "customer"))
+            .andExpect(model().attribute("changeRequest", hasProperty("title", isEmptyOrNullString())))
+            .andExpect(model().attribute("changeRequest", hasProperty("customer", is(customerName))));
+
+        verifyZeroInteractions(changeRequestServiceMock);
+    }
+
+    @Test
+    public void AddChangeRequest_ShouldAddChangeRequestToDBAndShouldRenderChangeRequestListView() throws Exception {
+        final String crTitle = "Title for test";
+        final String crCustomer = "Test customer";
+        final String crControlStatement = "This is the control statement for this request.";
+        final String crRisk = "High";
+        final String crState = "Submitted";
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post("/changerequest/add");
+        request.contentType(MediaType.APPLICATION_FORM_URLENCODED);
+        request.param("title", crTitle);
+        request.param("customer", crCustomer);
+        request.param("control", crControlStatement);
+        request.param("risk", crRisk);
+        request.param("state", crState);
+
+        mockMvc.perform(request)
+            .andExpect(status().isFound())
+            .andExpect(view().name("redirect:/changerequests"))
+            .andExpect(redirectedUrl("/changerequests"));
+
+        ArgumentCaptor<ChangeRequest> formObjectArgument = ArgumentCaptor.forClass(ChangeRequest.class);
+        verify(changeRequestServiceMock, times(1)).create(formObjectArgument.capture());
+
+        ChangeRequest formObject = formObjectArgument.getValue();
+
+        assertThat(formObject.getTitle(), is(crTitle));
+        assertThat(formObject.getControl(), is(crControlStatement));
+        assertThat(formObject.getCustomer(), is(crCustomer));
+        assertThat(formObject.getRisk(), is(RiskEnum.High));
+        assertThat(formObject.getState(), is(RequestStateEnum.Submitted));
+        assertThat(formObject.getId(), is(0));
     }
 }

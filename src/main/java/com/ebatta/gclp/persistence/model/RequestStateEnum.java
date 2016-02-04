@@ -19,4 +19,8 @@ public enum RequestStateEnum {
         String s = super.toString();
         return s.substring(0, 1) + s.substring(1).toLowerCase();
     }
+
+    public String getValue() {
+        return this.toString();
+    }
 }

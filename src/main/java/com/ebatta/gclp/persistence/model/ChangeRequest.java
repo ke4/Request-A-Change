@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotEmpty;
@@ -29,7 +30,12 @@ public class ChangeRequest implements Serializable {
 
     private String summary;
     private String detail;
+
+    @NotEmpty
     private String control;
+
+    @NotEmpty
+    @Size(min=2, max=100)
     private String customer;
 
     @Enumerated(EnumType.STRING)
@@ -37,6 +43,9 @@ public class ChangeRequest implements Serializable {
 
     @Enumerated(EnumType.STRING)
     private RequestStateEnum state;
+
+    @Transient
+    private boolean newCR;
 
     public int getId() {
         return id;
@@ -100,5 +109,9 @@ public class ChangeRequest implements Serializable {
 
     public void setState(RequestStateEnum state) {
         this.state = state;
+    }
+
+    public boolean isNewCR() {
+        return id == 0;
     }
 }

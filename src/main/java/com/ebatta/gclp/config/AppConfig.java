@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 
 @Configuration
 @ComponentScan(basePackages = { "com.ebatta.gclp.service" })
@@ -16,9 +16,9 @@ public class AppConfig {
     ServletContext servletContext;
 
     @Bean
-    public ResourceBundleMessageSource messageSource() {
-        ResourceBundleMessageSource rb = new ResourceBundleMessageSource();
-        rb.setBasenames(new String[] { "i18n/messages" /*, "messages/validation" */ });
+    public ReloadableResourceBundleMessageSource messageSource() {
+        ReloadableResourceBundleMessageSource rb = new ReloadableResourceBundleMessageSource();
+        rb.setBasenames(new String[] { "classpath:i18n/messages", "classpath:messages/validation" });
         return rb;
     }
 }
