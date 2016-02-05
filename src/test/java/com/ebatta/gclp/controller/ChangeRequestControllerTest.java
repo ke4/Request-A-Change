@@ -44,6 +44,7 @@ import com.ebatta.gclp.config.PersistenceJPAConfig;
 import com.ebatta.gclp.config.TestContext;
 import com.ebatta.gclp.config.WebConfig;
 import com.ebatta.gclp.exception.ChangeRequestNotFoundException;
+import com.ebatta.gclp.persistence.dto.ChangeRequestDTO;
 import com.ebatta.gclp.persistence.model.ChangeRequest;
 import com.ebatta.gclp.persistence.model.ChangeRequestBuilder;
 import com.ebatta.gclp.persistence.model.RequestStateEnum;
@@ -237,7 +238,7 @@ public class ChangeRequestControllerTest {
             .risk(TEST_DATA_CR_RISK)
             .state(TEST_DATA_CR_STATE)
             .build();
-        when(changeRequestServiceMock.create(any(ChangeRequest.class))).thenReturn(newChangeRequest);
+        when(changeRequestServiceMock.create(any(ChangeRequestDTO.class))).thenReturn(newChangeRequest);
 
         mockMvc.perform(get("/changerequest/add"))
             .andExpect(status().isOk())
@@ -300,10 +301,10 @@ public class ChangeRequestControllerTest {
             .andExpect(view().name("redirect:/changerequests"))
             .andExpect(redirectedUrl("/changerequests"));
 
-        ArgumentCaptor<ChangeRequest> formObjectArgument = ArgumentCaptor.forClass(ChangeRequest.class);
+        ArgumentCaptor<ChangeRequestDTO> formObjectArgument = ArgumentCaptor.forClass(ChangeRequestDTO.class);
         verify(changeRequestServiceMock, times(1)).create(formObjectArgument.capture());
 
-        ChangeRequest formObject = formObjectArgument.getValue();
+        ChangeRequestDTO formObject = formObjectArgument.getValue();
 
         assertThat(formObject.getTitle(), is(crTitle));
         assertThat(formObject.getControl(), is(crControlStatement));

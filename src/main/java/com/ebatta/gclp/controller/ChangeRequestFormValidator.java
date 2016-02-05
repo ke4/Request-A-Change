@@ -5,19 +5,19 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
-import com.ebatta.gclp.persistence.model.ChangeRequest;
+import com.ebatta.gclp.persistence.dto.ChangeRequestDTO;
 
 @Component
 public class ChangeRequestFormValidator implements Validator {
 
     @Override
     public boolean supports(Class<?> clazz) {
-        return ChangeRequest.class.equals(clazz);
+        return ChangeRequestDTO.class.equals(clazz);
     }
 
     @Override
     public void validate(Object target, Errors errors) {
-        ChangeRequest changeRequest = (ChangeRequest) target;
+        ChangeRequestDTO changeRequest = (ChangeRequestDTO) target;
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "title", "NotEmpty.changeRequest.title");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "control", "NotEmpty.changeRequest.control");

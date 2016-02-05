@@ -24,13 +24,14 @@
 
   <div class="container">
     <form:form id="crForm" class="form-horizontal table-bordered"
-        commandName="changeRequest" action="${createCRUrl }" method="post">
+        modelAttribute="changeRequest" action="${createCRUrl }" method="post">
       <br>
       <spring:bind path="id">
         <div class="form-group">
           <label for="id" class="col-sm-2 control-label">#ID</label>
           <div class="col-sm-9">
-            <form:label id="id" path="id" class="form-control" />
+            ${changeRequest.id }
+            <form:input type="hidden" name="id" path="id"/>
           </div>
         </div>
       </spring:bind>

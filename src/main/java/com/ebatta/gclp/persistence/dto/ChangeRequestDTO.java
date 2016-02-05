@@ -106,10 +106,16 @@ public class ChangeRequestDTO {
 
     @Override
     public String toString() {
-        StringBuffer buffer = new StringBuffer("ChangeRequest[ ");
+        StringBuffer buffer = new StringBuffer("ChangeRequestDTO[ ");
         buffer.append("id: ").append(id)
-            .append(", title=").append(title);
-        
+            .append(", title=").append(title)
+            .append(", summary=").append(summary)
+            .append(", detail=").append(detail)
+            .append(", control=").append(control)
+            .append(", customer=").append(customer)
+            .append(", risk=").append(risk)
+            .append(", state=").append(state);
+
         return buffer.toString();
     }
 }

@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ebatta.gclp.exception.ChangeRequestNotFoundException;
 import com.ebatta.gclp.persistence.dao.ChangeRequestDao;
+import com.ebatta.gclp.persistence.dto.ChangeRequestDTO;
 import com.ebatta.gclp.persistence.model.ChangeRequest;
 
 @Service
@@ -45,13 +46,23 @@ public class ChangeRequestServiceImpl implements ChangeRequestService {
     }
 
     @Override
-    public ChangeRequest create(ChangeRequest changeRequest) {
-        return dao.create(changeRequest);
+    public ChangeRequest create(ChangeRequestDTO dto) {
+        ChangeRequest newChangeRequest = toEntity(dto);
+        return dao.create(newChangeRequest);
     }
 
     @Override
-    public ChangeRequest update(ChangeRequest changeRequest) throws ChangeRequestNotFoundException {
+    public ChangeRequest update(ChangeRequestDTO changeRequest) throws ChangeRequestNotFoundException {
         ChangeRequest changeRequestToUpdate = dao.findById(changeRequest.getId());
+
+        changeRequestToUpdate.setTitle(changeRequest.getTitle());
+        changeRequestToUpdate.setSummary(changeRequest.getSummary());
+        changeRequestToUpdate.setDetail(changeRequest.getDetail());
+        changeRequestToUpdate.setControl(changeRequest.getControl());
+        changeRequestToUpdate.setCustomer(changeRequest.getCustomer());
+        changeRequestToUpdate.setRisk(changeRequest.getRisk());
+        changeRequestToUpdate.setState(changeRequest.getState());
+
         return dao.update(changeRequestToUpdate);
     }
 
@@ -60,4 +71,18 @@ public class ChangeRequestServiceImpl implements ChangeRequestService {
         return dao.deleteById(id);
     }
 
+    private ChangeRequest toEntity(ChangeRequestDTO dto) {
+        ChangeRequest changeRequest = ChangeRequest.getBuilder()
+            .id(dto.getId())
+            .title(dto.getTitle())
+            .summary(dto.getSummary())
+            .detail(dto.getDetail())
+            .control(dto.getControl())
+            .customer(dto.getCustomer())
+            .risk(dto.getRisk())
+            .state(dto.getState())
+            .build();
+
+        return changeRequest;
+    }
 }

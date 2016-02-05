@@ -1,5 +1,8 @@
 package com.ebatta.gclp.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,14 +48,14 @@ public class ChangeRequestController {
 
     @RequestMapping(value = "/changerequests", method = RequestMethod.GET)
     public String findAll(Model model) {
-        model.addAttribute("changeRequests", service.findAll());
+        model.addAttribute("changeRequests", createDTOs(service.findAll()));
         return "changerequest/list";
     }
 
     @RequestMapping(value = "/changerequest/{id}", method = RequestMethod.GET)
     public String findById(@PathVariable(value="id") Integer id, Model model)
             throws ChangeRequestNotFoundException {
-        model.addAttribute("changeRequest", service.findById(id));
+        model.addAttribute("changeRequest", createDTO(service.findById(id)));
         model.addAttribute("riskItems", RiskEnum.values());
         model.addAttribute("mode", "view");
         return "changerequest/view";
@@ -67,7 +70,7 @@ public class ChangeRequestController {
 
     @RequestMapping(value="/changerequest/add", method = RequestMethod.GET)
     public String showAddChangeRequest(Model model) {
-        model.addAttribute("changeRequest", new ChangeRequest());
+        model.addAttribute("changeRequest", new ChangeRequestDTO());
         model.addAttribute("riskItems", RiskEnum.values());
         model.addAttribute("stateItems", RequestStateEnum.values());
         model.addAttribute("mode", "add");
@@ -75,7 +78,7 @@ public class ChangeRequestController {
     }
 
     @RequestMapping(value="/changerequest/add", method = RequestMethod.POST)
-    public String add(@Validated @ModelAttribute("changeRequest") ChangeRequest changeRequest,
+    public String add(@Validated @ModelAttribute("changeRequest") ChangeRequestDTO changeRequest,
             BindingResult result, Model model) throws ChangeRequestNotFoundException {
         if (result.hasErrors()) {
             model.addAttribute("mode", "add");
@@ -84,6 +87,7 @@ public class ChangeRequestController {
             return "changerequest/view";
         }
 
+        logger.debug("======= ChangeRequest: " + changeRequest);
         if (changeRequest.getId() == null) {
             service.create(changeRequest);
         } else {
@@ -93,10 +97,11 @@ public class ChangeRequestController {
         return "redirect:/changerequests";
     }
 
-    @RequestMapping(value = "/changerequest/{crId}/update", method = RequestMethod.GET)
-    public String updateById(@PathVariable(value="crId") Integer crId, Model model)
+    @RequestMapping(value = "/changerequest/{id}/update", method = RequestMethod.GET)
+    public String updateById(@PathVariable(value="id") Integer id, Model model)
             throws ChangeRequestNotFoundException {
-        ChangeRequest crToUpdate = service.findById(crId);
+        ChangeRequestDTO crToUpdate = createDTO(service.findById(id));
+        logger.debug("======= ChangeRequest from UPDATE: " + crToUpdate);
         model.addAttribute("changeRequest", crToUpdate);
         model.addAttribute("riskItems", RiskEnum.values());
         model.addAttribute("stateItems", RequestStateEnum.values());
@@ -114,6 +119,16 @@ public class ChangeRequestController {
         mav.addObject("exception", exception);
         mav.setViewName("error/cr_notfound");
         return mav;
+    }
+
+    private List<ChangeRequestDTO> createDTOs(List<ChangeRequest> models) {
+        List<ChangeRequestDTO> dtos = new ArrayList<>();
+
+        for (ChangeRequest model : models) {
+            dtos.add(createDTO(model));
+        }
+
+        return dtos;
     }
 
     private ChangeRequestDTO createDTO(ChangeRequest model) {

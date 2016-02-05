@@ -18,6 +18,7 @@ import com.ebatta.gclp.config.AppConfig;
 import com.ebatta.gclp.config.PersistenceJPAConfig;
 import com.ebatta.gclp.config.WebConfig;
 import com.ebatta.gclp.exception.ChangeRequestNotFoundException;
+import com.ebatta.gclp.persistence.dto.ChangeRequestDTO;
 import com.ebatta.gclp.persistence.model.ChangeRequest;
 import com.ebatta.gclp.persistence.model.RequestStateEnum;
 import com.ebatta.gclp.persistence.model.RiskEnum;
@@ -64,7 +65,7 @@ public class ChangeRequestServiceTest {
     @Rollback(true)
     public void whenCreate_ShouldPersistToDatabase() throws ChangeRequestNotFoundException {
         String changeRequestTitle = "New change request";
-        ChangeRequest newCR = createNewChangeRequest(changeRequestTitle, "New change request summary",
+        ChangeRequestDTO newCR = createNewChangeRequestDTO(changeRequestTitle, "New change request summary",
             "The details of the new change request", "The control statement of the new change request",
             "Customer 1", RiskEnum.High, RequestStateEnum.Submitted);
 
@@ -81,7 +82,7 @@ public class ChangeRequestServiceTest {
         assertEquals(RequestStateEnum.Submitted, crToUpdate.getState());
         crToUpdate.setState(RequestStateEnum.Approved);
 
-        ChangeRequest updatedpersistedChangeRequest = service.update(crToUpdate);
+        ChangeRequest updatedpersistedChangeRequest = service.update(createDTO(crToUpdate));
 
         assertEquals(RequestStateEnum.Approved, updatedpersistedChangeRequest.getState());
     }
@@ -91,7 +92,7 @@ public class ChangeRequestServiceTest {
     @Rollback(true)
     public void whenDeleteChangeRequest_ShouldRemoveItFromDatabase() throws ChangeRequestNotFoundException {
         String changeRequestTitle = "New change request 2";
-        ChangeRequest newCR = createNewChangeRequest(changeRequestTitle, "New change request summary 2",
+        ChangeRequestDTO newCR = createNewChangeRequestDTO(changeRequestTitle, "New change request summary 2",
                 "The details of the new change request 2", "The control statement of the new change request 2",
                 "Customer 2", RiskEnum.High, RequestStateEnum.Submitted);
         service.create(newCR);
@@ -104,10 +105,10 @@ public class ChangeRequestServiceTest {
         service.findByTitle(changeRequestTitle);
     }
 
-    private ChangeRequest createNewChangeRequest(
+    private ChangeRequestDTO createNewChangeRequestDTO(
             String title, String summary, String detail, String control,
             String customer, RiskEnum risk, RequestStateEnum state) {
-        ChangeRequest newCR = new ChangeRequest();
+        ChangeRequestDTO newCR = new ChangeRequestDTO();
         newCR.setTitle(title);
         newCR.setSummary(summary);
         newCR.setDetail(detail);
@@ -117,5 +118,20 @@ public class ChangeRequestServiceTest {
         newCR.setState(state);
 
         return newCR;
+    }
+
+    private ChangeRequestDTO createDTO(ChangeRequest model) {
+        ChangeRequestDTO dto = new ChangeRequestDTO();
+
+        dto.setId(model.getId());
+        dto.setTitle(model.getTitle());
+        dto.setSummary(model.getSummary());
+        dto.setDetail(model.getDetail());
+        dto.setControl(model.getControl());
+        dto.setCustomer(model.getCustomer());
+        dto.setRisk(model.getRisk());
+        dto.setState(model.getState());
+
+        return dto;
     }
 }

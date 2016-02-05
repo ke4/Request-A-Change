@@ -132,4 +132,61 @@ public class ChangeRequest implements Serializable {
 
         return buffer.toString();
     }
+
+    public static Builder getBuilder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+
+        private ChangeRequest changeRequest;
+
+        public Builder() {
+            changeRequest = new ChangeRequest();
+        }
+
+        public Builder id(Integer id) {
+            changeRequest.setId(id);
+            return this;
+        }
+
+        public Builder title(String title) {
+            changeRequest.setTitle(title);
+            return this;
+        }
+
+        public Builder summary(String summary) {
+            changeRequest.setSummary(summary);
+            return this;
+        }
+
+        public Builder detail(String detail) {
+            changeRequest.setDetail(detail);
+            return this;
+        }
+
+        public Builder control(String control) {
+            changeRequest.setControl(control);
+            return this;
+        }
+
+        public Builder customer(String customer) {
+            changeRequest.setCustomer(customer);
+            return this;
+        }
+
+        public Builder risk(RiskEnum risk) {
+            changeRequest.setRisk(risk);
+            return this;
+        }
+
+        public Builder state(RequestStateEnum state) {
+            changeRequest.setState(state);
+            return this;
+        }
+
+        public ChangeRequest build() {
+            return changeRequest;
+        }
+    }
 }

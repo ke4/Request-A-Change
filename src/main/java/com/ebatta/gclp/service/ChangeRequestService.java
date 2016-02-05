@@ -2,8 +2,9 @@ package com.ebatta.gclp.service;
 
 import java.util.List;
 
-import com.ebatta.gclp.persistence.model.ChangeRequest;
-import com.ebatta.gclp.exception.ChangeRequestNotFoundException;;
+import com.ebatta.gclp.exception.ChangeRequestNotFoundException;
+import com.ebatta.gclp.persistence.dto.ChangeRequestDTO;
+import com.ebatta.gclp.persistence.model.ChangeRequest;;
 
 public interface ChangeRequestService {
 
@@ -13,9 +14,9 @@ public interface ChangeRequestService {
     
     List<ChangeRequest> findAll();
 
-    ChangeRequest create(ChangeRequest changeRequest);
+    ChangeRequest create(ChangeRequestDTO changeRequest);
 
-    ChangeRequest update(ChangeRequest changeRequest) throws ChangeRequestNotFoundException;
+    ChangeRequest update(ChangeRequestDTO changeRequest) throws ChangeRequestNotFoundException;
 
     ChangeRequest deleteById(Integer id) throws ChangeRequestNotFoundException;
 }
