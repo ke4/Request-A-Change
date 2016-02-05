@@ -38,7 +38,7 @@ public class ChangeRequestServiceTest {
     @Test
     public void whenFindByIdExistingChangeRequest_ShouldReturnIt() throws ChangeRequestNotFoundException {
         ChangeRequest cr = service.findById(1);
-        assertEquals(1, cr.getId());
+        assertEquals(new Integer(1), cr.getId());
         assertEquals("test title 1", cr.getTitle());
         assertEquals("test summary 1", cr.getSummary());
         assertEquals("test detail 1", cr.getDetail());

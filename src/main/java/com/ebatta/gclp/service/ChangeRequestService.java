@@ -7,7 +7,7 @@ import com.ebatta.gclp.exception.ChangeRequestNotFoundException;;
 
 public interface ChangeRequestService {
 
-    ChangeRequest findById(int id) throws ChangeRequestNotFoundException;
+    ChangeRequest findById(Integer id) throws ChangeRequestNotFoundException;
 
     ChangeRequest findByTitle(final String title) throws ChangeRequestNotFoundException;
     
@@ -17,5 +17,5 @@ public interface ChangeRequestService {
 
     ChangeRequest update(ChangeRequest changeRequest) throws ChangeRequestNotFoundException;
 
-    ChangeRequest deleteById(int id) throws ChangeRequestNotFoundException;
+    ChangeRequest deleteById(Integer id) throws ChangeRequestNotFoundException;
 }

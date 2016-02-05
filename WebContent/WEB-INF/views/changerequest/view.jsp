@@ -26,6 +26,14 @@
     <form:form id="crForm" class="form-horizontal table-bordered"
         commandName="changeRequest" action="${createCRUrl }" method="post">
       <br>
+      <spring:bind path="id">
+        <div class="form-group">
+          <label for="id" class="col-sm-2 control-label">#ID</label>
+          <div class="col-sm-9">
+            <form:label id="id" path="id" class="form-control" />
+          </div>
+        </div>
+      </spring:bind>
       <spring:bind path="title">
         <div class="form-group ${status.error ? 'has-error' : ''}">
           <label for="title" class="col-sm-2 control-label">Title</label>
@@ -100,7 +108,7 @@
             </div>
           </div>
         </c:when>
-        <c:when test="${ mode eq 'add' }">
+        <c:when test="${ mode eq 'add' || mode eq 'update' }">
           <spring:bind path="state">
             <div class="form-group ${status.error ? 'has-error' : ''}">
               <label for="state" class="col-sm-2 control-label">State</label>

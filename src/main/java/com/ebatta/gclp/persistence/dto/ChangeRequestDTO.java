@@ -1,30 +1,19 @@
-package com.ebatta.gclp.persistence.model;
+package com.ebatta.gclp.persistence.dto;
 
-import java.io.Serializable;
-
-import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
-@Entity
-@Table(name="change_request")
-public class ChangeRequest implements Serializable {
+import com.ebatta.gclp.persistence.model.RequestStateEnum;
+import com.ebatta.gclp.persistence.model.RiskEnum;
 
-    private static final long serialVersionUID = 1L;
+public class ChangeRequestDTO {
 
-    public ChangeRequest() {
+    public ChangeRequestDTO() {
     }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
     @NotEmpty
@@ -46,9 +35,6 @@ public class ChangeRequest implements Serializable {
 
     @Enumerated(EnumType.STRING)
     private RequestStateEnum state;
-
-    @Transient
-    private boolean newCR;
 
     public Integer getId() {
         return id;
@@ -122,14 +108,8 @@ public class ChangeRequest implements Serializable {
     public String toString() {
         StringBuffer buffer = new StringBuffer("ChangeRequest[ ");
         buffer.append("id: ").append(id)
-            .append(", title=").append(title)
-            .append(", summary=").append(summary)
-            .append(", detail=").append(detail)
-            .append(", control=").append(control)
-            .append(", customer=").append(customer)
-            .append(", risk=").append(risk)
-            .append(", state=").append(state);
-
+            .append(", title=").append(title);
+        
         return buffer.toString();
     }
 }

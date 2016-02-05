@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isEmptyOrNullString;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.times;
@@ -62,7 +63,7 @@ public class ChangeRequestControllerTest {
     @Autowired
     private WebApplicationContext webApplicationContext;
 
-    private static final int TEST_DATA_CR_ID = 1;
+    private static final Integer TEST_DATA_CR_ID = 1;
     private static final String TEST_DATA_CR_TITLE = "CR title 1";
     private static final String TEST_DATA_CR_SUMMARY = "CR summary 1";
     private static final String TEST_DATA_CR_DETAIL = "CR detail 1";
@@ -242,7 +243,7 @@ public class ChangeRequestControllerTest {
             .andExpect(status().isOk())
             .andExpect(view().name("changerequest/view"))
             .andExpect(forwardedUrl("/WEB-INF/views/changerequest/view.jsp"))
-            .andExpect(model().attribute("changeRequest", hasProperty("id", is(0))))
+            .andExpect(model().attribute("changeRequest", hasProperty("id", nullValue())))
             .andExpect(model().attribute("changeRequest", hasProperty("title", isEmptyOrNullString())))
             .andExpect(model().attribute("changeRequest", hasProperty("summary", isEmptyOrNullString())))
             .andExpect(model().attribute("changeRequest", hasProperty("detail", isEmptyOrNullString())))
@@ -309,6 +310,36 @@ public class ChangeRequestControllerTest {
         assertThat(formObject.getCustomer(), is(crCustomer));
         assertThat(formObject.getRisk(), is(RiskEnum.High));
         assertThat(formObject.getState(), is(RequestStateEnum.Submitted));
-        assertThat(formObject.getId(), is(0));
+        assertThat(formObject.getId(), nullValue());
+    }
+
+    @Test
+    public void showUpdateChangeRequestForm_ChangeRequestEntryFound_ShouldCreateFormAndRenderUpdateChangeRequestView() throws Exception {
+        ChangeRequest newChangeRequest = new ChangeRequestBuilder()
+            .id(TEST_DATA_CR_ID)
+            .title(TEST_DATA_CR_TITLE)
+            .summary(TEST_DATA_CR_SUMMARY)
+            .detail(TEST_DATA_CR_DETAIL)
+            .control(TEST_DATA_CR_CONTROL)
+            .customer(TEST_DATA_CR_CUSTOMER)
+            .risk(TEST_DATA_CR_RISK)
+            .state(TEST_DATA_CR_STATE)
+            .build();
+        when(changeRequestServiceMock.findById(TEST_DATA_CR_ID)).thenReturn(newChangeRequest);
+
+        mockMvc.perform(get("/changerequest/{id}/update", TEST_DATA_CR_ID))
+            .andExpect(status().isOk())
+            .andExpect(view().name("changerequest/view"))
+            .andExpect(forwardedUrl("/WEB-INF/views/changerequest/view.jsp"))
+            .andExpect(model().attribute("changeRequest", hasProperty("title", is(TEST_DATA_CR_TITLE))))
+            .andExpect(model().attribute("changeRequest", hasProperty("summary", is(TEST_DATA_CR_SUMMARY))))
+            .andExpect(model().attribute("changeRequest", hasProperty("detail", is(TEST_DATA_CR_DETAIL))))
+            .andExpect(model().attribute("changeRequest", hasProperty("control", is(TEST_DATA_CR_CONTROL))))
+            .andExpect(model().attribute("changeRequest", hasProperty("customer", is(TEST_DATA_CR_CUSTOMER))))
+            .andExpect(model().attribute("changeRequest", hasProperty("risk", is(TEST_DATA_CR_RISK))))
+            .andExpect(model().attribute("changeRequest", hasProperty("state", is(TEST_DATA_CR_STATE))));
+
+        verify(changeRequestServiceMock, times(1)).findById(TEST_DATA_CR_ID);
+        verifyNoMoreInteractions(changeRequestServiceMock);
     }
 }

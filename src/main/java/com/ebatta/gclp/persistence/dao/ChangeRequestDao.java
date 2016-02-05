@@ -6,7 +6,7 @@ import com.ebatta.gclp.persistence.model.ChangeRequest;
 
 public interface ChangeRequestDao {
 
-    ChangeRequest findById(int id);
+    ChangeRequest findById(Integer id);
 
     ChangeRequest findByTitle(final String title);
 
@@ -18,5 +18,5 @@ public interface ChangeRequestDao {
 
     ChangeRequest delete(final ChangeRequest entity);
 
-    ChangeRequest deleteById(int id);
+    ChangeRequest deleteById(Integer id);
 }
