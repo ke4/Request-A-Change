@@ -51,7 +51,7 @@
                 <td>${cr.id}</td>
                 <td>${cr.title}</td>
                 <td>${cr.risk}</td>
-                <td>${cr.state}</td>
+                <td>${cr.state.name}</td>
                 <td>
                   <spring:url value="/changerequest/${cr.id}" var="crUrl"/>
                   <spring:url value="/changerequest/${cr.id}/update" var="updateUrl"/>

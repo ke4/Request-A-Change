@@ -1,26 +1,41 @@
 package com.ebatta.gclp.persistence.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public enum RequestStateEnum {
 
-    Draft(1), Submitted(2), Approved(3), Rejected(4), MoreInfo(5);
+    Draft("Draft"), Submitted("Submitted"), Approved("Approved"),
+    Rejected("Rejected"), MoreInfo("More information needed");
 
-    private int stateLevel;
+    private String name;
+    private static Map<String,RequestStateEnum> nameEnumMap;
     
-    private RequestStateEnum(int stateLevel) {
-        this.stateLevel = stateLevel;
+    private RequestStateEnum(String name) {
+        this.name = name;
     }
 
-    public int getStateLevel() {
-        return stateLevel;
+    public String getName() {
+        return name;
     }
 
-    @Override
-    public String toString() {
-        String s = super.toString();
-        return s.substring(0, 1) + s.substring(1).toLowerCase();
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getValue() {
-        return this.toString();
+    public static RequestStateEnum findRequestStateByName(String name) {
+        if (nameEnumMap == null) {
+            createMap();
+        }
+
+        return nameEnumMap.get(name);
+    }
+
+    private static void createMap() {
+        nameEnumMap = new HashMap<>();
+
+        for (RequestStateEnum state : values()) {
+            nameEnumMap.put(state.getName(), state);
+        }
     }
 }

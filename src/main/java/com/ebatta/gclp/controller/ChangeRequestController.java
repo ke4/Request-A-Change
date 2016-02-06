@@ -26,6 +26,7 @@ import com.ebatta.gclp.exception.ChangeRequestNotFoundException;
 import com.ebatta.gclp.persistence.dto.ChangeRequestDTO;
 import com.ebatta.gclp.persistence.model.ChangeRequest;
 import com.ebatta.gclp.persistence.model.RequestStateEnum;
+import com.ebatta.gclp.persistence.model.RequestStatePropertyEditor;
 import com.ebatta.gclp.persistence.model.RiskEnum;
 import com.ebatta.gclp.service.ChangeRequestService;
 
@@ -44,6 +45,7 @@ public class ChangeRequestController {
     @InitBinder
     protected void initBinder(WebDataBinder binder) {
         binder.setValidator(changeRequestFormValidator);
+        binder.registerCustomEditor(RequestStateEnum.class, new RequestStatePropertyEditor());
     }
 
     @RequestMapping(value = "/changerequests", method = RequestMethod.GET)

@@ -26,15 +26,17 @@
     <form:form id="crForm" class="form-horizontal table-bordered"
         modelAttribute="changeRequest" action="${createCRUrl }" method="post">
       <br>
-      <spring:bind path="id">
-        <div class="form-group">
-          <label for="id" class="col-sm-2 control-label">#ID</label>
-          <div class="col-sm-9">
-            ${changeRequest.id }
-            <form:input type="hidden" name="id" path="id"/>
+      <c:if test="${ mode ne 'add' }">
+        <spring:bind path="id">
+          <div class="form-group">
+            <label for="id" class="col-sm-2 control-label">#ID</label>
+            <div class="col-sm-9">
+              ${changeRequest.id }
+              <form:input type="hidden" name="id" path="id"/>
+            </div>
           </div>
-        </div>
-      </spring:bind>
+        </spring:bind>
+      </c:if>
       <spring:bind path="title">
         <div class="form-group ${status.error ? 'has-error' : ''}">
           <label for="title" class="col-sm-2 control-label">Title</label>
@@ -100,7 +102,7 @@
         <c:when test="${ mode eq 'view' }">
           <div class="form-group">
             <label for="state" class="col-sm-2 control-label">State</label>
-            <div class="col-sm-9">${changeRequest.state }</div>
+            <div class="col-sm-9">${changeRequest.state.name }</div>
           </div>
           <div class="form-group">
             <div class="col-sm-offset-10 col-sm-2">
@@ -114,8 +116,8 @@
             <div class="form-group ${status.error ? 'has-error' : ''}">
               <label for="state" class="col-sm-2 control-label">State</label>
               <div class="col-sm-9">
-                <form:select path="state" id="state" items="${stateItems}" itemValue="value"
-                  itemLabel="value" class="form-control" required="true"/>
+                <form:select path="state" id="state" items="${stateItems}" itemValue="name"
+                  itemLabel="name" class="form-control" required="true"/>
                 <form:errors id="error-state" path="state" class="control-label text-warning" />
               </div>
             </div>
